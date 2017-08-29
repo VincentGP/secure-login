@@ -6,11 +6,10 @@
     $sUserName = clean($sUserName);
     $sPassword = clean($sPassword);
 
-    echo $sUserName;
-
     $con = new mysqli("localhost", "root", "root", "websec-login");
 
     if ($sUserName == "" || $sPassword == "" ) {
+        echo "error";
         exit;
     }
 
@@ -27,13 +26,13 @@
             if($row['username'] == $sUserName && $row['password'] == $sPassword && $row['attempts'] < 3) {
                 $sql = "UPDATE users SET attempts = 0 WHERE username = '$sUserName'";
                 $result = $con->query($sql);
-                echo "Den er fin";
+                echo "success";
             }
         }
     } else {
         $sql = "UPDATE users SET attempts = attempts + 1  WHERE username = '$sUserName'";
         $result = $con->query($sql);
-        echo "Det går ikke";
+        echo "error";        
     }
 
     function clean($text) {

@@ -5,17 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>LOGIN</title>
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+        }
+        #app {
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        form {
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+        input {
+            margin-bottom: 5px;
+        }
+        span {
+            color: red;
+        }
+        label {
+            color: grey;
+        }
+    </style>
 </head>
 <body>
 
         <div id="app">
             <form>
                 <label for="username">Username</label>
-                <input v-model="userName" type="text" name="username">
+                <input v-model="userName" type="text" name="username" placeholder="Username">
                 <label for="password">Password</label>
-                <input v-model="password" type="text" name="password">
+                <input v-model="password" type="text" name="password" placeholder="Password">
                 <button @click.prevent="logIn()">Log in</button>
             </form>
+            <template v-if="loggedIn">
+                <p>Congratulations! You are now logged in.</p>
+            </template>
+            <span v-show="tryAgain">Try again</span> 
         </div>
 
 
@@ -27,10 +57,13 @@
                 el: '#app',
                 data: {
                     userName: "",
-                    password: ""
+                    password: "",
+                    loggedIn: false,
+                    tryAgain: false
                 },
                 methods: {
-                    logIn() {
+                    logIn: function() {
+                        let vm = this;
                         const request = new XMLHttpRequest();
                         const sUrl = 'login.php?username='+ this.userName +'&password='+ this.password +'';
                         //Indstil parametre til Ajax request
@@ -39,10 +72,14 @@
                         request.onload = function() {
                         //Hvis statuskoden er OK
                         if (request.status >= 200 && request.status < 400) {
-                            //Vi gjorde det sgu
+                            //Vi gjorde det sgu og nu får vi noget tilbage fra serveren
                             var resp = request.responseText;
-                            //Log hvad vi får tilbage fra serveren
-                            console.log(resp);
+                            if(resp == "success") {
+                                vm.loggedIn = true;
+                                vm.tryAgain = false;
+                            } else {
+                                vm.tryAgain = true;
+                            }
                         } else {
                             alert("Ja, vi kom igennem til serveren, men der skete en fejl.");
                         }

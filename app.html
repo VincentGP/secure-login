@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LOGIN</title>
+</head>
+<body>
+
+        <div id="app">
+            <form>
+                <label for="username">Username</label>
+                <input v-model="userName" type="text" name="username">
+                <label for="password">Password</label>
+                <input v-model="password" type="text" name="password">
+                <button @click.prevent="logIn()">Log in</button>
+            </form>
+        </div>
+
+
+        <script src="https://unpkg.com/vue"></script>
+        
+        <script>
+
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    userName: "",
+                    password: ""
+                },
+                methods: {
+                    logIn() {
+                        const request = new XMLHttpRequest();
+                        const sUrl = 'login.php?username='+ this.userName +'&password='+ this.password +'';
+                        //Indstil parametre til Ajax request
+                        request.open('GET', sUrl, true);
+                        //AJAX funktionen
+                        request.onload = function() {
+                        //Hvis statuskoden er OK
+                        if (request.status >= 200 && request.status < 400) {
+                            //Vi gjorde det sgu
+                            var resp = request.responseText;
+                            //Log hvad vi får tilbage fra serveren
+                            console.log(resp);
+                        } else {
+                            alert("Ja, vi kom igennem til serveren, men der skete en fejl.");
+                        }
+                        };
+
+                        request.onerror = function() {
+                            alert("Vi kom slet ikke i forbindelse med serveren");
+                        };
+                        //Metode som sender det request vi har gjort klart indtil videre
+                        request.send();
+                    }
+                }
+            });
+        
+        </script>
+
+</body>
+</html>

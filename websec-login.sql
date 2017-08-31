@@ -7,7 +7,7 @@
 #
 # Host: localhost (MySQL 5.6.33)
 # Database: websec-login
-# Generation Time: 2017-08-29 12:52:45 +0000
+# Generation Time: 2017-08-31 12:15:37 +0000
 # ************************************************************
 
 
@@ -20,6 +20,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
+# Dump of table failed_login_attempts
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `failed_login_attempts`;
+
+CREATE TABLE `failed_login_attempts` (
+  `user_name` varchar(30) NOT NULL DEFAULT '',
+  `login_time` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+LOCK TABLES `failed_login_attempts` WRITE;
+/*!40000 ALTER TABLE `failed_login_attempts` DISABLE KEYS */;
+
+INSERT INTO `failed_login_attempts` (`user_name`, `login_time`)
+VALUES
+	('Vincent','2017-08-31 14:12:47'),
+	('Dennis','2017-08-31 14:14:33');
+
+/*!40000 ALTER TABLE `failed_login_attempts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
 # Dump of table users
 # ------------------------------------------------------------
 
@@ -29,7 +51,7 @@ CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(30) NOT NULL DEFAULT '',
   `password` varchar(30) NOT NULL DEFAULT '',
-  `attempts` int(11) DEFAULT NULL,
+  `attempts` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -38,7 +60,8 @@ LOCK TABLES `users` WRITE;
 
 INSERT INTO `users` (`id`, `username`, `password`, `attempts`)
 VALUES
-	(1,'Dennis','1234',0);
+	(1,'Dennis','1234',0),
+	(2,'Vincent','1234',0);
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;

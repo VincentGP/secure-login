@@ -30,7 +30,9 @@
             }
         }
     } else {
-        $sql = "UPDATE users SET attempts = attempts + 1  WHERE username = '$sUserName'";
+        $sql = "UPDATE users SET attempts = attempts + 1 WHERE username = '$sUserName'";
+        $result = $con->query($sql);
+        $sql = "INSERT INTO failed_login_attempts (user_name, login_time) VALUES ('$sUserName', now())";
         $result = $con->query($sql);
         echo "error";        
     }

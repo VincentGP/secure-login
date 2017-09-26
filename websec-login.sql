@@ -50,7 +50,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(30) NOT NULL DEFAULT '',
-  `password` varchar(30) NOT NULL DEFAULT '',
+  `userPass` varchar(64) NOT NULL DEFAULT '',
   `attempts` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -58,7 +58,7 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
-INSERT INTO `users` (`id`, `username`, `password`, `attempts`)
+INSERT INTO `users` (`id`, `username`, `userPass`, `attempts`)
 VALUES
 	(1,'Dennis','1234',0),
 	(2,'Vincent','1234',0);

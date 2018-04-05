@@ -13,7 +13,7 @@
   $sPassword = clean($sPassword);
 
   // Open connection to database
-  $con = new mysqli("localhost", "root", "root", "websec-login");
+  $con = new mysqli("localhost", "root", "root", "security-login");
 
   // User credentials shouldn't be empty
   if ($sUserName == "" || $sPassword == "") {

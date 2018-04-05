@@ -1,0 +1,24 @@
+body {
+  font-family: 'Helvetica', sans-serif;
+}
+#app {
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+form {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+}
+input {
+  margin-bottom: 5px;
+}
+span {
+  color: red;
+}
+label {
+  color: grey;
+}

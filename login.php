@@ -1,62 +1,81 @@
 <?php
 
-    $sUserName = $_GET['username'];
-    $sPassword = $_GET['password'];
+  // GET user credentials
+  $sUserName = $_GET['username'];
+  $sPassword = $_GET['password'];
 
-    $peber = "vincent";
-    $sSetPassword;
+  // Set the peber variable
+  $peber = "vincent";
+  $sSetPassword;
 
-    $sUserName = clean($sUserName);
-    $sPassword = clean($sPassword);
+  // Sanitize user input
+  $sUserName = clean($sUserName);
+  $sPassword = clean($sPassword);
 
-    $con = new mysqli("localhost", "root", "root", "websec-login");
+  // Open connection to database
+  $con = new mysqli("localhost", "root", "root", "websec-login");
 
-    if ($sUserName == "" || $sPassword == "" ) {
-        echo "error";
-        exit;
+  // User credentials shouldn't be empty
+  if ($sUserName == "" || $sPassword == "") {
+    echo "error";
+    exit;
+  }
+
+  // SELECT all users where the username matches
+  $sql = "SELECT * FROM users WHERE username = '$sUserName'";
+
+  // Run the query
+  $result = $con->query($sql);
+ 
+  // If a user wasn't found then close the connection
+  if (!$result) {
+    die("Error: ". $con->error);
+  }
+
+  // If there is a result
+  if ($result->num_rows == 1) {
+    // Loop through the results
+    while($row = $result->fetch_assoc()) {
+      // Reset attempts
+      $sql = "UPDATE users SET attempts = 0 WHERE username = '$sUserName'";
+      // Run the query
+      $result = $con->query($sql);
+      // Save password in variable
+      $sSetPassword = $row["userPass"];
+      break;
     }
-
-    $sql = "SELECT * FROM users WHERE username = '$sUserName'";
-
+  } else {
+    // Add one attempt
+    $sql = "UPDATE users SET attempts = attempts + 1 WHERE username = '$sUserName'";
+    // Run the query
     $result = $con->query($sql);
-    
-    if (!$result) {
-        die("Error: ". $con->error);
-    }
+    // Log the failed attempt
+    $sql = "INSERT INTO failed_login_attempts (user_name, login_time) VALUES ('$sUserName', now())";
+    // Run the query
+    $result = $con->query($sql);
+    echo "error";
+    // Close the connection and exit
+    $conn->close();
+    exit;
+  }
+  
+  // Check if the password is correct
+  $verify = password_verify($sPassword.$peber, $sSetPassword);
 
-    if($result->num_rows==1) {
+  // Send feedback to the client
+  if($verify)
+    echo "success";
+  else {
+    echo "error";
+  }
 
-        while($row = $result->fetch_assoc()) {
-                $sql = "UPDATE users SET attempts = 0 WHERE username = '$sUserName'";
-                $result = $con->query($sql);
-                $sSetPassword = $row["userPass"];
-                break;
-                $conn->close();
-        }
-    } else {
-        $sql = "UPDATE users SET attempts = attempts + 1 WHERE username = '$sUserName'";
-        $result = $con->query($sql);
-        $sql = "INSERT INTO failed_login_attempts (user_name, login_time) VALUES ('$sUserName', now())";
-        $result = $con->query($sql);
-        echo "error"; 
-        $conn->close();
-        exit;
-    }
-    
+  // Function to sanitize user input
+  function clean($text) {
+    // Remove tags and special characters
+    $text = strip_tags($text);
+    $text = htmlspecialchars($text, ENT_QUOTES);
+    // Return clean text
+    return ($text);
+  }
 
-    $verify = password_verify($sPassword.$peber, $sSetPassword);
-
-    if($verify)
-        echo "success";
-    else 
-        echo "error";
-
-    function clean($text) {
-        //Fjerner tags, hvis de er i inputtet
-        $text = strip_tags($text);
-        $text = htmlspecialchars($text, ENT_QUOTES);
-        //Returner ren tekst
-        return ($text);
-    }
-    
 ?>
